@@ -13,12 +13,46 @@
 
 @implementation ATMTextLayer
 @synthesize caption;
+@synthesize font;
+@synthesize lineBreakMode;
+@synthesize textAlignment;
+@synthesize shadowEnabled;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self _initialize];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self _initialize];
+    }
+    return self;
+}
 
 - (id)initWithLayer:(id)layer {
 	if ((self = [super init])) {
-		caption = @"";
+        [self _initialize];
 	}
 	return self;
+}
+
+- (void)_initialize
+{
+    self.caption = @"";
+    self.font = [UIFont boldSystemFontOfSize:14];
+#if defined(__IPHONE_6_0)
+    lineBreakMode = NSLineBreakByCharWrapping;
+    textAlignment = NSTextAlignmentCenter;
+#else
+    lineBreakMode = UILineBreakModeWordWrap;
+    textAlignment = UITextAlignmentCenter;
+#endif
+    shadowEnabled = YES;
 }
 
 + (BOOL)needsDisplayForKey:(NSString *)key {
@@ -33,20 +67,23 @@
 	UIGraphicsPushContext(ctx);
 	
 	CGRect f = self.bounds;
-	CGRect s = f;
-	s.origin.y -= 1;
-	
-	[[UIColor blackColor] set];
-	[caption drawInRect:f withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+    CGRect s = f;
+    s.origin.y -= 1;
+    
+    if ( self.shadowEnabled ) {
+        [[UIColor blackColor] set];
+        [caption drawInRect:f withFont:self.font lineBreakMode:self.lineBreakMode alignment:self.textAlignment];
+    }
 	
 	[[UIColor whiteColor] set];
-	[caption drawInRect:s withFont:[UIFont boldSystemFontOfSize:14] lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentCenter];
+	[caption drawInRect:s withFont:self.font lineBreakMode:self.lineBreakMode alignment:self.textAlignment];
 	
 	UIGraphicsPopContext();
 }
 
 - (void)dealloc {
-	[caption release];
+    self.font = nil;
+    self.caption = nil;
 	[super dealloc];
 }
 

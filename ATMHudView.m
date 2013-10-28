@@ -92,6 +92,8 @@
 	[imageLayer release];
 	[captionLayer release];
 	[progressLayer release];
+    
+    NSLog(@"ATMHudView dealloced ---------- %@", self);
 	
     [super dealloc];
 }
@@ -110,7 +112,7 @@
 		targetBounds = CGRectMake(0, 0, p.margin*2+activitySize.width, p.margin*2+activitySize.height);
 	} else {
 		BOOL hasFixedSize = NO;
-		CGSize captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+		CGSize captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 		
 		if (fixedSize.width > 0 & fixedSize.height > 0) {
 			CGSize s = fixedSize;
@@ -118,7 +120,7 @@
 				s.width = progressRect.size.width+p.margin*2;
 			}
 			hasFixedSize = YES;
-			captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(s.width-p.margin*2, 200) lineBreakMode:UILineBreakModeWordWrap];
+			captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(s.width-p.margin*2, 200) lineBreakMode:captionLayer.lineBreakMode];
 			targetBounds = CGRectMake(0, 0, s.width, s.height);
 		}
 		
@@ -132,7 +134,7 @@
 				if (progress > 0) {
 					adjustment = p.padding+progressRect.size.height;
 					if (captionSize.width+p.margin*2 < progressRect.size.width) {
-						captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(progressRect.size.width, 200) lineBreakMode:UILineBreakModeWordWrap];
+						captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(progressRect.size.width, 200) lineBreakMode:captionLayer.lineBreakMode];
 						captionRect.size = captionSize;
 						targetBounds = CGRectMake(0, 0, progressRect.size.width+p.margin*2, captionSize.height+p.margin*2+adjustment);
 					} else {
@@ -159,7 +161,7 @@
 				if (progress > 0) {
 					adjustment = p.padding+progressRect.size.height;
 					if (captionSize.width+p.margin*2 < progressRect.size.width) {
-						captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(progressRect.size.width, 200) lineBreakMode:UILineBreakModeWordWrap];
+						captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(progressRect.size.width, 200) lineBreakMode:captionLayer.lineBreakMode];
 						captionRect.size = captionSize;
 					}
 				} else {
@@ -173,7 +175,7 @@
 				int deltaWidth = targetBounds.size.width-captionSize.width;
 				marginX = 0.5*deltaWidth;
 				if (marginX < p.margin) {
-					captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+					captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 					captionRect.size = captionSize;
 					
 					targetBounds = CGRectMake(0, 0, captionSize.width+2*p.margin, targetBounds.size.height);
@@ -196,7 +198,7 @@
 				int deltaWidth = targetBounds.size.width-(adjustment+captionSize.width);
 				marginX = 0.5*deltaWidth;
 				if (marginX < p.margin) {
-					captionSize = [caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+					captionSize = [caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 					captionRect.size = captionSize;
 					
 					targetBounds = CGRectMake(0, 0, adjustment+captionSize.width+2*p.margin, targetBounds.size.height);
@@ -287,7 +289,7 @@
 		targetSize = CGSizeMake(p.margin*2+styleSize.width, p.margin*2+styleSize.height);
 	} else {
 		BOOL hasFixedSize = NO;
-		CGSize captionSize = [item.caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+		CGSize captionSize = [item.caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 		
 		float adjustment = 0;
 		CGFloat marginX = 0;
@@ -319,7 +321,7 @@
 				int deltaWidth = targetSize.width-captionSize.width;
 				marginX = 0.5*deltaWidth;
 				if (marginX < p.margin) {
-					captionSize = [item.caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+					captionSize = [item.caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 					
 					targetSize = CGSizeMake(captionSize.width+2*p.margin, targetSize.height);
 				}
@@ -339,7 +341,7 @@
 				int deltaWidth = targetSize.width-(adjustment+captionSize.width);
 				marginX = 0.5*deltaWidth;
 				if (marginX < p.margin) {
-					captionSize = [item.caption sizeWithFont:[UIFont boldSystemFontOfSize:14] constrainedToSize:CGSizeMake(160, 200) lineBreakMode:UILineBreakModeWordWrap];
+					captionSize = [item.caption sizeWithFont:captionLayer.font constrainedToSize:CGSizeMake(160, 200) lineBreakMode:captionLayer.lineBreakMode];
 					
 					targetSize = CGSizeMake(adjustment+captionSize.width+2*p.margin, targetSize.height);
 				}

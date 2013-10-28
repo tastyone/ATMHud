@@ -13,8 +13,16 @@
 
 @interface ATMTextLayer : CALayer {
 	NSString *caption;
+    UIFont *font;
+    UILineBreakMode lineBreakMode;
+    UITextAlignment textAlignment;
+    BOOL shadowEnabled;
 }
 
 @property (nonatomic, retain) NSString *caption;
+@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, assign) UILineBreakMode lineBreakMode;
+@property (nonatomic, assign) UITextAlignment textAlignment;
+@property (nonatomic, assign) BOOL shadowEnabled;
 
 @end

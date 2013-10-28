@@ -83,6 +83,10 @@ typedef enum {
 
 - (id)initWithDelegate:(id)hudDelegate;
 
+- (void)releaseAll;
+- (BOOL)isDone;
+- (BOOL)isDoneWithDoneString:(NSString*)doneString;
+
 - (void)setCaption:(NSString *)caption;
 - (void)setImage:(UIImage *)image;
 - (void)setActivity:(BOOL)activity;

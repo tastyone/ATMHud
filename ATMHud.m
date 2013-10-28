@@ -45,6 +45,26 @@
 	return self;
 }
 
+- (void)releaseAll {
+    [self.__view setP:nil];
+    [self.__view removeFromSuperview];
+    self.__view = nil;
+    
+    [self.view removeFromSuperview];
+    self.view = nil;
+    
+    [self removeFromParentViewController];
+    [self setDelegate:nil];
+}
+
+- (BOOL)isDone {
+    return [self isDoneWithDoneString:NSLocalizedString(@"Done", nil)];
+}
+
+- (BOOL)isDoneWithDoneString:(NSString*)doneString {
+    return ( self.__view.progress == 0.f && self.__view.showActivity == NO && [self.__view.caption isEqualToString:doneString] );
+}
+
 - (void)loadView {
 	UIView *base = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	base.backgroundColor = [UIColor clearColor];
@@ -74,14 +94,18 @@
 }
 
 - (void)dealloc {
-	[sound release];
-	[__view release];
-	[displayQueue release];
+	[sound release]; sound = nil;
+	[__view release]; __view = nil;
+	[displayQueue release]; displayQueue = nil;
 	
-	[showSound release];
-	[updateSound release];
-	[hideSound release];
+	[showSound release]; showSound = nil;
+	[updateSound release]; updateSound = nil;
+	[hideSound release]; hideSound = nil;
+    
+    self.delegate = nil;
 	
+    NSLog(@"ATMHud dealloc ~~~~~~ : %@", self);
+    
     [super dealloc];
 }
 
@@ -254,6 +278,7 @@
 #pragma mark -
 #pragma mark Internal methods
 - (void)construct {
+    NSLog(@"ATMHud constructing ~~~~~~ : %@", self);
 	margin = padding = 10.0;
 	alpha = 0.7;
 	progressBorderRadius = 8.0;
