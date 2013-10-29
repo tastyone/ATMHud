@@ -14,15 +14,26 @@
 @interface ATMTextLayer : CALayer {
 	NSString *caption;
     UIFont *font;
+#if defined(__IPHONE_6_0)
+    NSLineBreakMode lineBreakMode;
+    NSTextAlignment textAlignment;
+#else
     UILineBreakMode lineBreakMode;
     UITextAlignment textAlignment;
+#endif
     BOOL shadowEnabled;
 }
 
+@property (nonatomic, retain) UIColor *color;
 @property (nonatomic, retain) NSString *caption;
 @property (nonatomic, retain) UIFont *font;
+#if defined(__IPHONE_6_0)
+@property (nonatomic, assign) NSLineBreakMode lineBreakMode;
+@property (nonatomic, assign) NSTextAlignment textAlignment;
+#else
 @property (nonatomic, assign) UILineBreakMode lineBreakMode;
 @property (nonatomic, assign) UITextAlignment textAlignment;
+#endif
 @property (nonatomic, assign) BOOL shadowEnabled;
 
 @end

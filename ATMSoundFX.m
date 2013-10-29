@@ -15,7 +15,11 @@
 
 + (id)soundEffectWithContentsOfFile:(NSString *)aPath {
     if (aPath) {
+#if __has_feature(objc_arc)
+        return [[ATMSoundFX alloc] initWithContentsOfFile:aPath];
+#else
         return [[[ATMSoundFX alloc] initWithContentsOfFile:aPath] autorelease];
+#endif
     }
     return nil;
 }
@@ -28,15 +32,27 @@
         
         if (aFileURL != nil)  {
             SystemSoundID aSoundID;
+#if __has_feature(objc_arc)
+            OSStatus error = AudioServicesCreateSystemSoundID((__bridge CFURLRef)aFileURL, &aSoundID);
+#else
             OSStatus error = AudioServicesCreateSystemSoundID((CFURLRef)aFileURL, &aSoundID);
+#endif
             
             if (error == kAudioServicesNoError) {
                 _soundID = aSoundID;
             } else {
+#if __has_feature(objc_arc)
+                self = nil;
+#else
                 [self release], self = nil;
+#endif
             }
         } else {
+#if __has_feature(objc_arc)
+            self = nil;
+#else
             [self release], self = nil;
+#endif
         }
     }
     return self;
@@ -44,7 +60,10 @@
 
 -(void)dealloc {
     AudioServicesDisposeSystemSoundID(_soundID);
+#if __has_feature(objc_arc)
+#else
     [super dealloc];
+#endif
 }
 
 -(void)play {

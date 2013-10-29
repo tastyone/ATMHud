@@ -10,8 +10,18 @@
  */
 
 #import <UIKit/UIKit.h>
-@class ATMHudView, ATMSoundFX, ATMHudQueueItem;
-@protocol ATMHudDelegate;
+
+#import "ATMHudView.h"
+#import "ATMTextLayer.h"
+#import "ATMProgressLayer.h"
+#import "ATMHudDelegate.h"
+
+@class ATMSoundFX, ATMHudQueueItem;
+
+typedef enum {
+    ATMHudStyleNone = 0,
+    ATMHudStyleThinTextForFullScreen,
+} ATMHudStyle;
 
 typedef enum {
 	ATMHudAccessoryPositionTop = 0,
@@ -41,7 +51,6 @@ typedef enum {
 	NSString *updateSound;
 	NSString *hideSound;
 	
-	id <ATMHudDelegate> delegate;
 	ATMHudAccessoryPosition accessoryPosition;
 	
 	@private
@@ -80,6 +89,10 @@ typedef enum {
 @property (nonatomic, assign) NSInteger queuePosition;
 
 + (NSString *)buildInfo;
+
+//+ (ATMHud *)hudWithStyle:(ATMHudStyle)hudStyle withDelegate:(id)hudDelegate;
++ (ATMHud *)hudForThinLargeTextFullScreenOnView:(UIView *)targetView withDelegate:(id)hudDelegate;
++ (ATMHud *)hudForMediumTextFullScreenOnView:(UIView *)targetView withDelegate:(id)hudDelegate;
 
 - (id)initWithDelegate:(id)hudDelegate;
 

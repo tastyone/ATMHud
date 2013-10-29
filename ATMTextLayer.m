@@ -12,6 +12,7 @@
 #import "ATMTextLayer.h"
 
 @implementation ATMTextLayer
+@synthesize color;
 @synthesize caption;
 @synthesize font;
 @synthesize lineBreakMode;
@@ -43,6 +44,7 @@
 
 - (void)_initialize
 {
+    self.color = [UIColor whiteColor];
     self.caption = @"";
     self.font = [UIFont boldSystemFontOfSize:14];
 #if defined(__IPHONE_6_0)
@@ -75,7 +77,7 @@
         [caption drawInRect:f withFont:self.font lineBreakMode:self.lineBreakMode alignment:self.textAlignment];
     }
 	
-	[[UIColor whiteColor] set];
+	[self.color set];
 	[caption drawInRect:s withFont:self.font lineBreakMode:self.lineBreakMode alignment:self.textAlignment];
 	
 	UIGraphicsPopContext();
@@ -84,7 +86,10 @@
 - (void)dealloc {
     self.font = nil;
     self.caption = nil;
+#if __has_feature(objc_arc)
+#else
 	[super dealloc];
+#endif
 }
 
 @end

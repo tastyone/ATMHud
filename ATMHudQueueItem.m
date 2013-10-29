@@ -26,9 +26,15 @@
 }
 
 - (void)dealloc {
+#if __has_feature(objc_arc)
+    caption = nil;
+    image = nil;
+#else
 	[caption release];
 	[image release];
+    
 	[super dealloc];
+#endif
 }
 
 @end

@@ -83,6 +83,19 @@
 }
 
 - (void)dealloc {
+#if __has_feature(objc_arc)
+	caption = nil;
+	image = nil;
+	activity = nil;
+	p = nil;
+	
+	backgroundLayer = nil;
+	imageLayer = nil;
+	captionLayer = nil;
+	progressLayer = nil;
+    
+    NSLog(@"ATMHudView dealloced ---------- %@", self);
+#else
 	[caption release];
 	[image release];
 	[activity release];
@@ -96,6 +109,7 @@
     NSLog(@"ATMHudView dealloced ---------- %@", self);
 	
     [super dealloc];
+#endif
 }
 
 - (void)setProgress:(CGFloat)_p {

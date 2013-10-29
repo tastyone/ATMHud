@@ -17,6 +17,7 @@
 #import "ATMHudDelegate.h"
 #import "ATMSoundFX.h"
 #import "ATMHudQueueItem.h"
+#import "ATMTextLayer.h"
 
 @interface ATMHud (Private)
 - (void)construct;
@@ -24,11 +25,41 @@
 
 @implementation ATMHud
 @synthesize margin, padding, alpha, appearScaleFactor, disappearScaleFactor, progressBorderRadius, progressBorderWidth, progressBarRadius, progressBarInset;
-@synthesize delegate, accessoryPosition;
+@synthesize accessoryPosition;
 @synthesize center;
 @synthesize shadowEnabled, blockTouches, allowSuperviewInteraction;
 @synthesize showSound, updateSound, hideSound;
 @synthesize __view, sound, displayQueue, queuePosition;
+
++ (ATMHud *)hudForThinLargeTextFullScreenOnView:(UIView *)targetView withDelegate:(id)hudDelegate;
+{
+    ATMHud* hud = [[ATMHud alloc] initWithDelegate:hudDelegate];
+    [targetView addSubview:hud.view];
+    [hud.__view.captionLayer setShadowEnabled:NO];
+    [hud.__view.captionLayer setFont:[UIFont fontWithName:@"HelveticaNeue-UltraLight" size:140.f]];
+    //[hud.__view.captionLayer setFont:[UIFont boldSystemFontOfSize:62.f]];
+    [hud.__view.backgroundLayer setBackgroundColor:[UIColor clearColor].CGColor];
+    [hud setFixedSize:targetView.frame.size];
+    [hud setShadowEnabled:NO];
+    
+    [hud setBlockTouches:NO];
+    return hud;
+}
+
++ (ATMHud *)hudForMediumTextFullScreenOnView:(UIView *)targetView withDelegate:(id)hudDelegate;
+{
+    ATMHud* hud = [[ATMHud alloc] initWithDelegate:hudDelegate];
+    [targetView addSubview:hud.view];
+    [hud.__view.captionLayer setShadowEnabled:NO];
+    [hud.__view.captionLayer setFont:[UIFont fontWithName:@"HelveticaNeue-Medium" size:62.f]];
+    //[hud.__view.captionLayer setFont:[UIFont boldSystemFontOfSize:62.f]];
+    [hud.__view.backgroundLayer setBackgroundColor:[UIColor clearColor].CGColor];
+    [hud setFixedSize:targetView.frame.size];
+    [hud setShadowEnabled:NO];
+    
+    [hud setBlockTouches:NO];
+    return hud;
+}
 
 - (id)init {
 	if ((self = [super init])) {
@@ -39,7 +70,7 @@
 
 - (id)initWithDelegate:(id)hudDelegate {
 	if ((self = [super init])) {
-		delegate = hudDelegate;
+		_delegate = hudDelegate;
 		[self construct];
 	}
 	return self;
@@ -74,7 +105,11 @@
 	[base addSubview:__view];
 	
 	self.view = base;
+#if __has_feature(objc_arc)
+    base = nil;
+#else
 	[base release];
+#endif
 }
 
 - (void)viewDidLoad {
@@ -94,6 +129,19 @@
 }
 
 - (void)dealloc {
+#if __has_feature(objc_arc)
+    sound = nil;
+    __view = nil;
+    displayQueue = nil;
+	
+    showSound = nil;
+    updateSound = nil;
+    hideSound = nil;
+    
+    self.delegate = nil;
+	
+    NSLog(@"ATMHud dealloc ~~~~~~ : %@", self);
+#else
 	[sound release]; sound = nil;
 	[__view release]; __view = nil;
 	[displayQueue release]; displayQueue = nil;
@@ -107,6 +155,7 @@
     NSLog(@"ATMHud dealloc ~~~~~~ : %@", self);
     
     [super dealloc];
+#endif
 }
 
 + (NSString *)buildInfo {
@@ -265,6 +314,8 @@
 
 - (void)update {
 	[__view update];
+    
+    self.view.frame = CGRectMake(0.f, 0.f, self.view.superview.frame.size.width, self.view.superview.frame.size.height);
 }
 
 - (void)hide {
