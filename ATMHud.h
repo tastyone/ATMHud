@@ -88,6 +88,8 @@ typedef enum {
 @property (nonatomic, retain) NSMutableArray *displayQueue;
 @property (nonatomic, assign) NSInteger queuePosition;
 
+@property (nonatomic, assign) BOOL animate;
+
 + (NSString *)buildInfo;
 
 //+ (ATMHud *)hudWithStyle:(ATMHudStyle)hudStyle withDelegate:(id)hudDelegate;

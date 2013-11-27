@@ -396,26 +396,41 @@
 					[p.delegate hudWillAppear:p];
 				}
 				
-				self.transform = CGAffineTransformMakeScale(p.appearScaleFactor, p.appearScaleFactor);
-
-				[UIView animateWithDuration:.1 
-								 animations:^{
-									 self.transform = CGAffineTransformMakeScale(1.0, 1.0);
-									 self.alpha = 1.0;
-								 } 
-								 completion:^(BOOL finished){
-									if (finished) {
-										if (!p.allowSuperviewInteraction) {
-											self.superview.userInteractionEnabled = YES;
-										}
-										if (![p.showSound isEqualToString:@""] && p.showSound != NULL) {
-											[p playSound:p.showSound];
-										}
-										if ([(id)p.delegate respondsToSelector:@selector(hudDidAppear:)]) {
-											[p.delegate hudDidAppear:p];
-										}
-									} 
-								 }];
+                if ( p.animate ) {
+                    self.transform = CGAffineTransformMakeScale(p.appearScaleFactor, p.appearScaleFactor);
+                    
+                    [UIView animateWithDuration:.1 
+                                     animations:^{
+                                         self.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                                         self.alpha = 1.0;
+                                     } 
+                                     completion:^(BOOL finished){
+                                        if (finished) {
+                                            if (!p.allowSuperviewInteraction) {
+                                                self.superview.userInteractionEnabled = YES;
+                                            }
+                                            if (![p.showSound isEqualToString:@""] && p.showSound != NULL) {
+                                                [p playSound:p.showSound];
+                                            }
+                                            if ([(id)p.delegate respondsToSelector:@selector(hudDidAppear:)]) {
+                                                [p.delegate hudDidAppear:p];
+                                            }
+                                        } 
+                                     }];
+                } else {
+                    self.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                    self.alpha = 1.0;
+                    
+                    if (!p.allowSuperviewInteraction) {
+                        self.superview.userInteractionEnabled = YES;
+                    }
+                    if (![p.showSound isEqualToString:@""] && p.showSound != NULL) {
+                        [p playSound:p.showSound];
+                    }
+                    if ([(id)p.delegate respondsToSelector:@selector(hudDidAppear:)]) {
+                        [p.delegate hudDidAppear:p];
+                    }
+                }
 			}];
 			
 			backgroundLayer.position = CGPointMake(0.5*targetBounds.size.width, 0.5*targetBounds.size.height);
@@ -423,10 +438,12 @@
 			
 			captionLayer.position = [self sharpPoint:CGPointMake(captionRect.origin.x, captionRect.origin.y)];
 			captionLayer.bounds = CGRectMake(0, 0, captionRect.size.width, captionRect.size.height);
-			CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
-			cAnimation.duration = 0.001;
-			cAnimation.toValue = caption;
-			[captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//            if ( p.animate ) {
+                CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
+                cAnimation.duration = 0.001;
+                cAnimation.toValue = caption;
+                [captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//            }
 			captionLayer.caption = caption;
 			
 			imageLayer.contents = (id)image.CGImage;
@@ -458,11 +475,13 @@
 				self.center = p.center;
 			}
 			
-			CABasicAnimation *ccAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
-			ccAnimation.duration = 0.001;
-			ccAnimation.toValue = @"";
-			ccAnimation.delegate = self;
-			[captionLayer addAnimation:ccAnimation forKey:@"captionClearAnimation"];
+            if ( p.animate ) {
+                CABasicAnimation *ccAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
+                ccAnimation.duration = 0.001;
+                ccAnimation.toValue = @"";
+                ccAnimation.delegate = self;
+                [captionLayer addAnimation:ccAnimation forKey:@"captionClearAnimation"];
+            }
 			captionLayer.caption = @"";
 			
 			[CATransaction begin];
@@ -473,10 +492,12 @@
 				progressLayer.theProgress = progress;
 				[progressLayer setNeedsDisplay];
 				
-				CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
-				cAnimation.duration = 0.001;
-				cAnimation.toValue = caption;
-				[captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//                if ( p.animate ) {
+                    CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
+                    cAnimation.duration = 0.001;
+                    cAnimation.toValue = caption;
+                    [captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//                }
 				captionLayer.caption = caption;
 				
 				if (showActivity) {
@@ -523,21 +544,31 @@
 				[p playSound:p.hideSound];
 			}
 			
-			[UIView animateWithDuration:.1 
-							 animations:^{ 
-								 self.alpha = 0.0;
-								 self.transform = CGAffineTransformMakeScale(p.disappearScaleFactor, p.disappearScaleFactor);
-							 } 
-							 completion:^(BOOL finished){
-								 if (finished) {
-									 self.superview.userInteractionEnabled = NO;
-									 self.transform = CGAffineTransformMakeScale(1.0, 1.0);
-									 [self reset];
-									 if ([(id)p.delegate respondsToSelector:@selector(hudDidDisappear:)]) {
-										 [p.delegate hudDidDisappear:p];
-									 } 
-								 }
-							 }];
+            if ( p.animate ) {
+                [UIView animateWithDuration:.1
+                                 animations:^{ 
+                                     self.alpha = 0.0;
+                                     self.transform = CGAffineTransformMakeScale(p.disappearScaleFactor, p.disappearScaleFactor);
+                                 } 
+                                 completion:^(BOOL finished){
+                                     if (finished) {
+                                         self.superview.userInteractionEnabled = NO;
+                                         self.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                                         [self reset];
+                                         if ([(id)p.delegate respondsToSelector:@selector(hudDidDisappear:)]) {
+                                             [p.delegate hudDidDisappear:p];
+                                         } 
+                                     }
+                                 }];
+            } else {
+                self.alpha = 0.0;
+                self.superview.userInteractionEnabled = NO;
+                self.transform = CGAffineTransformMakeScale(1.0, 1.0);
+                [self reset];
+                if ([(id)p.delegate respondsToSelector:@selector(hudDidDisappear:)]) {
+                    [p.delegate hudDidDisappear:p];
+                }
+            }
 			break;
 		}
 	}
@@ -575,10 +606,12 @@
 	imageLayer.contents = nil;
 	[CATransaction commit];
 	
-	CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
-	cAnimation.duration = 0.001;
-	cAnimation.toValue = @"";
-	[captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//    if ( p.animate ) {
+        CABasicAnimation *cAnimation = [CABasicAnimation animationWithKeyPath:@"caption"];
+        cAnimation.duration = 0.001;
+        cAnimation.toValue = @"";
+        [captionLayer addAnimation:cAnimation forKey:@"captionAnimation"];
+//    }
 	captionLayer.caption = @"";
 	
 	[p setShowSound:@""];

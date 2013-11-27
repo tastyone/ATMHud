@@ -350,6 +350,7 @@
 	center = CGPointZero;
 	blockTouches = NO;
 	allowSuperviewInteraction = NO;
+    self.animate = YES;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
