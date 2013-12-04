@@ -35,6 +35,8 @@
 {
     ATMHud* hud = [[ATMHud alloc] initWithDelegate:hudDelegate];
     [targetView addSubview:hud.view];
+    [hud setMargin:2.f];
+    [hud setPadding:2.f];
     [hud.__view.captionLayer setShadowEnabled:NO];
     [hud.__view.captionLayer setFont:[UIFont fontWithName:@"AvenirNextCondensed-UltraLight" size:80.f]];
     //[hud.__view.captionLayer setFont:[UIFont boldSystemFontOfSize:62.f]];
